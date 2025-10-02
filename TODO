@@ -1,0 +1,27 @@
+https://www.figma.com/design/Hda8bgGevRwr9ZsRA4zBi4/Full-E-Commerce-Website-UI-UX-Design-(Community)?node-id=1-3&p=f&t=ouabHbBn6BasTvk6-0
+
+docker compose
+Makefile
+github cicd
+isort, flake8
+minio
+redis
+postgres
+
+
+i18n (en, uz, ru)
+
+Task
+1. login, register
+- email|phone orqali login qilish
+- email|phone register qilishda,
+agar pochta kiritgan bolsa, pochtaga tasdiqlash linki
+agar phone kiritgan bolsa, sms yuborish kk (1minutda tasdiqlash kk)
+sms qayta yuborish bolsin (3martadan keyin malumotlarini delete qilish kk)
+
+1.1 edit profile apisi kerak (email yoki phone ozgartirganda tasdiqlash yuborilishi)
+
+2. product modeli
+- rasmlari bir hil size bolsin (barcha webp formatga otkazilsin)
+- productni size va color bolsin
+
