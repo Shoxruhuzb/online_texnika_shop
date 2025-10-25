@@ -1,15 +1,5 @@
 https://www.figma.com/design/Hda8bgGevRwr9ZsRA4zBi4/Full-E-Commerce-Website-UI-UX-Design-(Community)?node-id=1-3&p=f&t=ouabHbBn6BasTvk6-0
 
-docker compose
-Makefile
-github cicd
-isort, flake8
-minio
-redis
-postgres
-
-
-i18n (en, uz, ru)
 
 Task
 1. login, register
@@ -24,3 +14,11 @@ sms qayta yuborish bolsin (3martadan keyin malumotlarini delete qilish kk)
 2. product modeli
 - rasmlari bir hil size bolsin (barcha webp formatga otkazilsin)
 - productni size va color bolsin
+
+3. i18n (en, uz, ru)
+
+4. isort, flake8
+
+5. modellarga ckeditor5 qoshish
+
+

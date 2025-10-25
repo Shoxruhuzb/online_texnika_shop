@@ -38,6 +38,7 @@ class ProductModelAdmin(admin.ModelAdmin):
     list_display = ('id', 'name', 'image_count')
     inlines = [ProductImageInline, ProductAttributeInline]
 
+
 @admin.register(User)
 class UserAdmin(BaseUserAdmin):
     list_display = ('id', 'phone', 'is_active', 'is_staff', 'is_superuser')
@@ -57,4 +58,3 @@ class UserAdmin(BaseUserAdmin):
             'fields': ('phone', 'password1', 'password2', 'is_active', 'is_staff', 'is_superuser'),
         }),
     )
-
