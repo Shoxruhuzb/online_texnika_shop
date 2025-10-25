@@ -3,15 +3,14 @@ https://www.figma.com/design/Hda8bgGevRwr9ZsRA4zBi4/Full-E-Commerce-Website-UI-U
 
 Task
 1. login, register
-- email|phone orqali login qilish
-- email|phone register qilishda,
-agar pochta kiritgan bolsa, pochtaga tasdiqlash linki
+- phone orqali login qilish
+- phone register qilishda,
 agar phone kiritgan bolsa, sms yuborish kk (1minutda tasdiqlash kk)
-sms qayta yuborish bolsin (3martadan keyin malumotlarini delete qilish kk)
+sms qayta yuborish bolsin
 
-1.1 edit profile apisi kerak (email yoki phone ozgartirganda tasdiqlash yuborilishi)
+1.1 edit profile apisi kerak (phone ozgartirganda tasdiqlash yuborilishi)
 
-2. product modeli
+2. product modeli +
 - rasmlari bir hil size bolsin (barcha webp formatga otkazilsin)
 - productni size va color bolsin
 
