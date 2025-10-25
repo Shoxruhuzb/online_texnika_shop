@@ -56,7 +56,7 @@ class LoginView(View):
 class LogoutPageView(View):
     def get(self, request):
         logout(request)
-        return redirect(reverse_lazy('login'))
+        return redirect(reverse_lazy('login_view'))
 
 class UserProfileTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'apps/auth/profile.html'
