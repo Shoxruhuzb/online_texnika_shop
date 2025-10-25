@@ -1,19 +1,40 @@
-from django.contrib.auth.models import AbstractUser
-from django.db.models import CharField
+from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
+from django.contrib.auth.models import PermissionsMixin
+from django.db.models import CharField, BooleanField, DateTimeField
 
-from django.db import models
+class UserManager(BaseUserManager):
+    def create_user(self, phone, password=None, **extra_fields):
+        if not phone:
+            raise ValueError("Phone raqam kiritilishi shart.")
+        user = self.model(phone=phone, **extra_fields)
+        user.set_password(password)
+        user.save(using=self._db)
+        return user
 
+    def create_superuser(self, phone, password=None, **extra_fields):
+        extra_fields.setdefault('is_staff', True)
+        extra_fields.setdefault('is_superuser', True)
+        extra_fields.setdefault('is_active', True)
 
-class User(AbstractUser):
-    phone = CharField(max_length=11, null=True, unique=True)
+        if not password:
+            raise ValueError("Superuser uchun parol kiritilishi kerak.")
 
-    @property
-    def full_name(self):
-        if len(self.get_full_name()) == 0:
-            return self.username
-        return self.get_full_name()
+        return self.create_user(phone, password, **extra_fields)
 
+class User(AbstractBaseUser, PermissionsMixin):
+    phone = CharField(max_length=100, null=True, blank=True, unique=True)
+    is_staff = BooleanField(default=False)
+    is_superuser = BooleanField(default=False)
+    is_active = BooleanField(default=True)
+    data_joined_at = DateTimeField(auto_now_add=True)
 
-class Profile(models.Model):
-    user = models.OneToOneField(User, on_delete=models.CASCADE)
-    phone = models.CharField(max_length=20, unique=True, null=True, blank=True)
+    USERNAME_FIELD = 'phone'
+    REQUIRED_FIELDS = []
+
+    objects = UserManager()
+
+    class Meta:
+        db_table = 'user'
+
+    def __str__(self):
+        return self.phone

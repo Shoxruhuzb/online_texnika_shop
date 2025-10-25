@@ -1,8 +1,11 @@
 from io import BytesIO
+
 from PIL import Image
+from PIL.Image import Resampling
 from django.core.files.base import ContentFile
 from django.db.models import CharField, FloatField, TextField, ImageField, ForeignKey, CASCADE
 from django.utils.translation import gettext_lazy as _
+
 from apps.models.base import UUIDBaseModel, CreatedBaseModel
 
 
@@ -10,7 +13,6 @@ class Product(UUIDBaseModel, CreatedBaseModel):
     name = CharField(max_length=255, verbose_name=_("Name"))
     price = FloatField(verbose_name=_("Price"))
     discount_price = FloatField(blank=True, null=True, verbose_name=_("Discount price"))
-    discount_percent = FloatField(blank=True, null=True, verbose_name=_("Discount percent"))
     product_amount = FloatField(blank=True, null=True, verbose_name=_("Amount"))
     description = TextField(verbose_name=_('Description'))
 
@@ -41,7 +43,7 @@ class ProductImage(UUIDBaseModel):
             img = Image.open(self.image)
             img = img.convert('RGB')
 
-            img.thumbnail((800, 800), Image.ANTIALIAS)
+            img.thumbnail((800, 800), Resampling.LANCZOS)
 
             buffer = BytesIO()
             img.save(buffer, format='WEBP', quality=80)
