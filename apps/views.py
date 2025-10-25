@@ -4,7 +4,7 @@ from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
 from django.views import View
 from django.views.generic import ListView, DetailView, TemplateView, CreateView
-from apps.forms import CustomUserCreationForm
+from apps.forms import RegisterForm
 
 from apps.models import Product
 from apps.utils import send_email
@@ -34,62 +34,29 @@ class ProductDetailView(DetailView):
 
 class RegisterCreateView(CreateView):
     template_name = 'apps/auth/register.html'
-    form_class = CustomUserCreationForm
+    form_class = RegisterForm
     success_url = reverse_lazy('product_list_view')
 
-    def form_valid(self, form):
-        _form = super().form_valid(form)
-
-        send_email.delay(form.instance.email)
-        return _form
-
-
-# class LoginTemplateView(LoginView):
-#     template_name = 'apps/auth/login.html'
-#     next_page = reverse_lazy('product_list_view')
-#
-#     def form_valid(self, form):
-#         return super().form_valid(form)
-#
-#     def form_invalid(self, form):
-#         return super().form_invalid(form)
-
-
-class CustomLoginView(View):
+class LoginView(View):
     def get(self, request):
         return render(request, 'apps/auth/login.html')
 
     def post(self, request):
-        username = request.POST.get('username')
-        identifier = request.POST.get('identifier')
+        phone = request.POST.get('phone')
         password = request.POST.get('password')
+        user = authenticate(request, username=phone, password=password)
 
-        try:
-            user = User.objects.get(username=username)
-
-            if (user.email == identifier) or (user.profile.phone == identifier):
-                auth_user = authenticate(request, username=username, password=password)
-
-                if auth_user is not None:
-                    login(request, auth_user)
-                    return redirect(reverse_lazy('product_list_view'))
-                else:
-                    messages.error(request, "Parol noto‘g‘ri.")
-            else:
-                messages.error(request, "Email yoki telefon noto‘g‘ri.")
-        except User.DoesNotExist:
+        if user is not None:
+            login(request, user)
+            return redirect(reverse_lazy('product_list_view'))
+        else:
             messages.error(request, "Bunday foydalanuvchi mavjud emas.")
-
         return render(request, 'apps/auth/login.html')
 
-
 class LogoutPageView(View):
-    success_url = reverse_lazy('product_list_view')
-
-    def get(self, request, *args, **kwargs):
+    def get(self, request):
         logout(request)
-        return redirect(self.success_url)
-
+        return redirect(reverse_lazy('login'))
 
 class UserProfileTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'apps/auth/profile.html'

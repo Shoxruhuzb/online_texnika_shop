@@ -1,6 +1,5 @@
 from django import forms
 from django.contrib.auth import authenticate
-from django.contrib.auth.forms import UserCreationForm
 from django.db.models.fields import CharField
 from django.forms import ModelForm
 
@@ -43,3 +42,5 @@ class LoginForm(forms.Form):
         if not user:
             raise forms.ValidationError("Invalid phone or password")
         return self.cleaned_data
+
+
