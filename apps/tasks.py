@@ -13,6 +13,3 @@ from root.settings import EMAIL_HOST_USER
 #     msg = "Bu xabar saytga ro'yxatdan o'tishni tasdiqlash uchun jo'natildi"
 #     send_mail(subject, msg, EMAIL_HOST_USER, [email])
 
-@shared_task
-def send_welcome_email(user_id):
-    pass
