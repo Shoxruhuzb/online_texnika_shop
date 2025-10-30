@@ -2,7 +2,7 @@ https://www.figma.com/design/Hda8bgGevRwr9ZsRA4zBi4/Full-E-Commerce-Website-UI-U
 
 
 Task
-1. login, register
+1. login, register +
 - phone orqali login qilish
 - phone register qilishda,
 agar phone kiritgan bolsa, sms yuborish kk (1minutda tasdiqlash kk)
@@ -21,5 +21,8 @@ sms qayta yuborish bolsin
 5. modellarga ckeditor5 qoshish
 
 6. fixtures qoshish
+
+7. bazaga phone saqlashda bir hil formatda saqlash
+
 
 
