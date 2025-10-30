@@ -23,27 +23,6 @@
     <link rel="stylesheet" href="{% static 'apps/vendors/styles/style.css' %}">
 
     {% block custom_css %}{% endblock %}
-
-    <!-- Google Analytics -->
-    <script async src="https://www.googletagmanager.com/gtag/js?id=G-GBZ3SGGX85"></script>
-    <script>
-        window.dataLayer = window.dataLayer || [];
-        function gtag(){dataLayer.push(arguments);}
-        gtag('js', new Date());
-        gtag('config', 'G-GBZ3SGGX85');
-    </script>
-
-    <!-- Google Tag Manager -->
-    <script>
-        (function(w,d,s,l,i){
-            w[l]=w[l]||[];
-            w[l].push({'gtm.start':new Date().getTime(),event:'gtm.js'});
-            var f=d.getElementsByTagName(s)[0],j=d.createElement(s),
-                dl=l!='dataLayer'?'&l='+l:'';
-            j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;
-            f.parentNode.insertBefore(j,f);
-        })(window,document,'script','dataLayer','GTM-NXZMQSS');
-    </script>
 </head>
 
 <body>
@@ -77,6 +56,18 @@
     </div>
 
     <div class="header-right">
+
+        <!-- 🛒 CART ICON qo‘shilgan qism -->
+        <div class="user-notification mr-3">
+            <a href="{% url 'cart_view' %}" class="dropdown-toggle no-arrow" title="Cart">
+                <i class="icon-copy dw dw-shopping-cart"></i>
+                {% if cart_count and cart_count > 0 %}
+                    <span class="badge notification-active">{{ cart_count }}</span>
+                {% endif %}
+            </a>
+        </div>
+        <!-- 🛒 CART ICON tugadi -->
+
         <div class="user-notification">
             <div class="dropdown">
                 <a class="dropdown-toggle no-arrow" href="#" role="button" data-toggle="dropdown">
@@ -106,7 +97,7 @@
                     <span class="user-icon">
                         <img src="{% static 'apps/vendors/images/photo1.jpg' %}" alt=""/>
                     </span>
-                    <span class="user-name">{{ user.full_name|default:user.username }}</span>
+                    <span class="user-name">{{ user.full_name }}</span>
                 </a>
                 <div class="dropdown-menu dropdown-menu-right dropdown-menu-icon-list">
                     <a class="dropdown-item" href="{% url 'profile_view' %}"><i class="dw dw-user1"></i> Profile</a>
@@ -150,11 +141,9 @@
 <!-- Main Content -->
 <div class="main-container">
     <div class="pd-ltr-20 xs-pd-20-10">
-        {% block main_content %}
-        <!-- Page-specific content goes here -->
-        {% endblock %}
+        {% block main_content %}{% endblock %}
         <div class="footer-wrap pd-20 mb-20 card-box">
-            <span>© {{ now|date:"Y" }} - <a href="https://github.com/dropways" target="_blank">DeskApp by Ankit Hingarajiya</a></span>
+            <span>© {{ now|date:"Y" }} - DeskApp by Ankit Hingarajiya</span>
         </div>
     </div>
 </div>
@@ -164,12 +153,6 @@
 <script src="{% static 'apps/vendors/scripts/script.min.js' %}"></script>
 <script src="{% static 'apps/vendors/scripts/process.js' %}"></script>
 <script src="{% static 'apps/vendors/scripts/layout-settings.js' %}"></script>
-
 {% block custom_js %}{% endblock %}
-
-<!-- Google Tag Manager (noscript) -->
-<noscript>
-    <iframe src="https://www.googletagmanager.com/ns.html?id=GTM-NXZMQSS" height="0" width="0" style="display:none;visibility:hidden"></iframe>
-</noscript>
 </body>
 </html>

@@ -2,6 +2,7 @@ from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db.models import CharField, BooleanField, DateTimeField
 
+
 class UserManager(BaseUserManager):
     def create_user(self, phone, password=None, **extra_fields):
         if not phone:
@@ -21,8 +22,9 @@ class UserManager(BaseUserManager):
 
         return self.create_user(phone, password, **extra_fields)
 
+
 class User(AbstractBaseUser, PermissionsMixin):
-    phone = CharField(max_length=100, null=True, blank=True, unique=True)
+    phone = CharField(max_length=100, unique=True)
     is_staff = BooleanField(default=False)
     is_superuser = BooleanField(default=False)
     is_active = BooleanField(default=True)
@@ -32,9 +34,6 @@ class User(AbstractBaseUser, PermissionsMixin):
     REQUIRED_FIELDS = []
 
     objects = UserManager()
-
-    class Meta:
-        db_table = 'user'
 
     def __str__(self):
         return self.phone

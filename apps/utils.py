@@ -1,52 +1,48 @@
-from decimal import Decimal
-from apps.models import Product
+from apps.models.cart import Cart, CartItem
+from apps.models.products import Product
 
 
-class Cart:
+class CartManager:
     def __init__(self, request):
+        self.request = request
+        self.user = request.user if request.user.is_authenticated else None
         self.session = request.session
-        cart = self.session.get('cart')
-        if not cart:
-            cart = self.session['cart'] = {}
-        self.cart = cart
+        if not self.session.session_key:
+            self.session.create()
+        self.session_key = self.session.session_key
+
+    def _get_or_create_cart(self):
+        if self.user:
+            cart, _ = Cart.objects.get_or_create(user=self.user)
+        else:
+            cart, _ = Cart.objects.get_or_create(session_key=self.session_key)
+        return cart
 
     def add(self, product_id, quantity=1):
-        product_id = str(product_id)
         product = Product.objects.get(id=product_id)
-        price = product.discount_price or product.price
+        cart = self._get_or_create_cart()
 
-        if product_id in self.cart:
-            self.cart[product_id]['quantity'] += quantity
-        else:
-            self.cart[product_id] = {
-                'name': product.name,
-                'price': str(price),
-                'quantity': quantity,
-                'image': product.first_image,
-            }
-        self.save()
+        item, created = CartItem.objects.get_or_create(cart=cart, product=product)
+        if not created:
+            item.quantity += quantity
+        item.save()
 
     def remove(self, product_id):
-        product_id = str(product_id)
-        if product_id in self.cart:
-            del self.cart[product_id]
-            self.save()
+        cart = self._get_or_create_cart()
+        CartItem.objects.filter(cart=cart, product_id=product_id).delete()
 
     def clear(self):
-        self.session['cart'] = {}
-        self.save()
+        cart = self._get_or_create_cart()
+        cart.items.all().delete()
 
-    def save(self):
-        self.session.modified = True
-
-    def __iter__(self):
-        for product_id, item in self.cart.items():
-            item['price'] = Decimal(item['price'])
-            item['total'] = item['price'] * item['quantity']
-            yield {'id': product_id, **item}
-
-    def __len__(self):
-        return sum(item['quantity'] for item in self.cart.values())
+    def get_items(self):
+        cart = self._get_or_create_cart()
+        return cart.items.select_related('product')
 
     def get_total_price(self):
-        return sum(Decimal(item['price']) * item['quantity'] for item in self.cart.values())
+        cart = self._get_or_create_cart()
+        return cart.total_price
+
+    def __len__(self):
+        cart = self._get_or_create_cart()
+        return cart.items.count()

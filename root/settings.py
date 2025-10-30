@@ -213,10 +213,5 @@ CKEDITOR_5_CONFIGS = {
     }
 }
 
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_HOST_USER = 'y.shoxruhuzb@gmail.com'
-EMAIL_HOST_PASSWORD = 'neyt bnsc nhui cvrh'
-EMAIL_USE_TLS = True
 
 LOGIN_URL = '/login'
