@@ -3,9 +3,9 @@ from django.contrib.auth.mixins import LoginRequiredMixin
 # from django.http import JsonResponse
 # from django.shortcuts import redirect, render
 from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 # from django.views import View
-# from django.views.decorators.csrf import csrf_exempt
-# from django.utils.decorators import method_decorator
 from django.views.generic import ListView, DetailView, TemplateView, CreateView
 from django.contrib import messages
 # from django.contrib.auth import get_user_model
