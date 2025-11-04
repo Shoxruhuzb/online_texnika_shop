@@ -215,3 +215,8 @@ CKEDITOR_5_CONFIGS = {
 
 
 LOGIN_URL = '/login'
+
+ACCOUNT_SID='YOUR ACCOUNT SID'
+AUTH_TOKEN='YOUR AUTH TOKEN'
+COUNTRY_CODE='+998' # +998 o'chirilishi mumkin. Lekin +998 registerda kiritiladi
+TWILIO_PHONE_NUMBER='number you get from Twilio'

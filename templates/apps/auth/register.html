@@ -28,7 +28,7 @@
                     <form method="post" action="{% url 'register_view' %}">
                         {% csrf_token %}
 
-                         <div class="input-group custom mb-3">
+                        <div class="input-group custom mb-3">
                             <input type="text" name="phone"
                                    class="form-control form-control-lg"
                                    placeholder="Phone" required />
@@ -59,6 +59,12 @@
                                     <i class="dw dw-padlock1"></i>
                                 </span>
                             </div>
+                        </div>
+
+                        <!-- OTP Verification section (SMS only) -->
+                        <div class="mb-3">
+                            <input type="hidden" name="methodOtp" value="sms">
+                            <p class="font-14 weight-500">OTP verification will be sent via SMS.</p>
                         </div>
 
                         <button type="submit" class="btn btn-primary btn-block">

@@ -38,7 +38,7 @@ class LoginForm(forms.Form):
     def clean(self):
         phone = self.cleaned_data.get('phone')
         password = self.cleaned_data.get('password')
-        user = authenticate(phone=phone, password=password)
+        user = authenticate(username=phone, password=password)
         if not user:
             raise forms.ValidationError("Invalid phone or password")
         return self.cleaned_data

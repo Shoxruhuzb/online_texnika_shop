@@ -10,7 +10,9 @@ dependencies = [
     "django-jazzmin>=3.0.1",
     "dotenv>=0.9.9",
     "drf-spectacular>=0.28.0",
+    "isort>=7.0.0",
     "pillow>=11.3.0",
     "psycopg2-binary>=2.9.10",
     "python-dotenv>=1.1.1",
+    "twilio>=9.8.5",
 ]

@@ -1,7 +1,7 @@
 from django.urls import path
 
 from apps.views import ProductListView, RegisterCreateView, LoginView, ProductDetailView, LogoutPageView, \
-    UserProfileTemplateView, CartView, AddToCartView, RemoveFromCartView
+    UserProfileTemplateView, CartView, AddToCartView, RemoveFromCartView, otpVerifyView, ResendOtpView
 
 urlpatterns = [
     path('', ProductListView.as_view(), name='product_list_view'),
@@ -11,7 +11,9 @@ urlpatterns = [
     path('product/<uuid:pk>', ProductDetailView.as_view(), name='product_detail_view'),
     path('profile', UserProfileTemplateView.as_view(), name='profile_view'),
     path('cart', CartView.as_view(), name='cart_view'),
-    path('cart/add/<uuid:product_id>/', AddToCartView.as_view(), name='add_to_cart'),
-    path('cart/remove/<uuid:product_id>/', RemoveFromCartView.as_view(), name='remove_from_cart'),
+    path('cart/add/<uuid:product_id>', AddToCartView.as_view(), name='add_to_cart'),
+    path('cart/remove/<uuid:product_id>', RemoveFromCartView.as_view(), name='remove_from_cart'),
+    path('otp/<str:uid>/', otpVerifyView.as_view(), name='otp_view'),
+    path('otp/resend/<str:uid>/', ResendOtpView.as_view(), name='resend_otp_view'),
 
 ]

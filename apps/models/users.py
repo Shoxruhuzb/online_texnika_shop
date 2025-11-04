@@ -1,3 +1,5 @@
+import uuid
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
 from django.db.models import CharField, BooleanField, DateTimeField
@@ -24,7 +26,10 @@ class UserManager(BaseUserManager):
 
 
 class User(AbstractBaseUser, PermissionsMixin):
-    phone = CharField(max_length=100, unique=True)
+    phone = CharField(max_length=15, unique=True)
+    otp = CharField(max_length=100, null=True, blank=True)
+    otp_created_at = DateTimeField(null=True, blank=True)
+    uid = CharField(default=uuid.uuid4, max_length=200)
     is_staff = BooleanField(default=False)
     is_superuser = BooleanField(default=False)
     is_active = BooleanField(default=True)

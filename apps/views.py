@@ -1,27 +1,26 @@
 from django.contrib.auth import logout, authenticate, login
 from django.contrib.auth.mixins import LoginRequiredMixin
-# from django.http import JsonResponse
-# from django.shortcuts import redirect, render
+from django.http import JsonResponse
 from django.urls import reverse_lazy
 from django.utils.decorators import method_decorator
 from django.views.decorators.csrf import csrf_exempt
-# from django.views import View
-from django.views.generic import ListView, DetailView, TemplateView, CreateView
+from django.views import View
+from django.views.generic import DetailView, TemplateView, CreateView
 from django.contrib import messages
-# from django.contrib.auth import get_user_model
 
 from apps.forms import RegisterForm
 from apps.models import Product
 from apps.utils import CartManager
 
-
 from django.shortcuts import render, redirect, get_object_or_404
-from django.views import View
-from django.http import JsonResponse
 from django.contrib.auth import get_user_model
 from django.db.models import F
 
+from .helper import MessageHandler, is_otp_valid
 from .models.cart import CartItem, Cart
+
+import random
+from django.http import HttpResponse
 
 User = get_user_model()
 
@@ -48,7 +47,91 @@ class ProductDetailView(DetailView):
 class RegisterCreateView(CreateView):
     template_name = 'apps/auth/register.html'
     form_class = RegisterForm
-    success_url = reverse_lazy('product_list_view')
+
+    def form_valid(self, form):
+        user = form.save(commit=False)
+        phone = form.cleaned_data.get('phone')
+        password = form.cleaned_data.get('password')
+
+        if User.objects.filter(phone=phone).exists():
+            return HttpResponse("User already exists")
+
+        user.set_password(password)
+
+        otp = random.randint(1000, 9999)
+        user.otp = str(otp)
+        user.save()
+
+        MessageHandler(phone, otp, user).send_otp_via_message()
+
+        response = redirect(f'/otp/{user.uid}/')
+        response.set_cookie("can_otp_enter", True, max_age=600)
+        return response
+
+
+# class otpVerifyView(View):
+#     template_name = 'apps/auth/otp.html'
+#
+#     def get(self, request, uid):
+#         return render(request, self.template_name, {'id': uid})
+#
+#     def post(self, request, uid):
+#         try:
+#             user = User.objects.get(uid=uid)
+#         except User.DoesNotExist:
+#             return HttpResponse("User not found")
+#
+#         if not request.COOKIES.get('can_otp_enter'):
+#             return HttpResponse('10 minutes passed')
+#
+#         entered_otp = request.POST.get('otp')
+#         if user.otp == entered_otp:
+#             user.is_active = True
+#             user.save()
+#             response = redirect(reverse_lazy("product_list_view"))
+#             response.set_cookie('verified', True)
+#             return response
+#         else:
+#             return HttpResponse("WRONG code")
+class otpVerifyView(View):
+    template_name = 'apps/auth/otp.html'
+
+    def get(self, request, uid):
+        return render(request, self.template_name, {'id': uid})
+
+    def post(self, request, uid):
+        try:
+            user = User.objects.get(uid=uid)
+        except User.DoesNotExist:
+            return HttpResponse("User not found")
+
+        entered_otp = request.POST.get('otp')
+        if is_otp_valid(user, entered_otp):
+            user.is_active = True
+            user.otp = None
+            user.otp_created_at = None
+            user.save()
+            response = redirect(reverse_lazy("product_list_view"))
+            response.set_cookie('verified', True)
+            return response
+        else:
+            return render(request, self.template_name, {
+                'id': uid,
+                'error_message': "❌ Siz kiritgan kod noto‘g‘ri yoki muddati tugagan."
+            })
+
+
+@method_decorator(csrf_exempt, name='dispatch')
+class ResendOtpView(View):
+    def post(self, request, uid):
+        try:
+            user = User.objects.get(uid=uid)
+        except User.DoesNotExist:
+            return JsonResponse({'success': False, 'message': 'User not found'})
+
+        otp = str(random.randint(1000, 9999))
+        MessageHandler(user.phone, otp, user).send_otp_via_message()
+        return JsonResponse({'success': True})
 
 
 class LoginView(View):
@@ -79,7 +162,6 @@ class UserProfileTemplateView(LoginRequiredMixin, TemplateView):
     template_name = 'apps/auth/profile.html'
 
 
-
 class CartView(View):
     def get_cart_items(self, request):
         cart_items = []
@@ -104,6 +186,7 @@ class CartView(View):
             'cart_items': cart_items,
             'total_price': total_price
         })
+
 
 class AddToCartView(View):
     def post(self, request, product_id):

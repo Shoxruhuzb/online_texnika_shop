@@ -7,7 +7,7 @@ from root.settings import MEDIA_URL, MEDIA_ROOT, STATIC_URL, STATIC_ROOT
 
 urlpatterns = [
                   path("admin/", admin.site.urls),
-                  # path('auth/', include('apps.urls')),
+                  path('auth/', include('apps.urls')),
                   path("ckeditor5/", include('django_ckeditor_5.urls')),
                   path("", include('apps.urls')),
                   path('api/schema/', SpectacularAPIView.as_view(), name='schema'),
