@@ -10,7 +10,7 @@ Tizimga kirish
     <div class="container">
         <div class="row align-items-center">
             <div class="col-md-6 col-lg-7">
-                <img src="{% static 'apps/vendors/images/login-page-img.png' %}" alt="Login"/>
+                <img src="{% static 'apps/vendors/images/login-page-img.png' %}" alt="Login" />
             </div>
             <div class="col-md-6 col-lg-5">
                 <div class="login-box bg-white box-shadow border-radius-10">
@@ -29,14 +29,30 @@ Tizimga kirish
                     <form method="post" action="{% url 'login_view' %}">
                         {% csrf_token %}
                         <div class="input-group custom mb-3">
-                            <input type="text" name="phone" class="form-control form-control-lg" placeholder="Phone" required />
+                            <input
+                                type="text"
+                                name="phone"
+                                id="phone"
+                                class="form-control form-control-lg"
+                                placeholder="Telefon raqam"
+                                value="+"
+                                required
+                                maxlength="16"
+                                autocomplete="off"
+                            />
                             <div class="input-group-append custom">
                                 <span class="input-group-text"><i class="icon-copy dw dw-user1"></i></span>
                             </div>
                         </div>
 
                         <div class="input-group custom mb-3">
-                            <input type="password" name="password" class="form-control form-control-lg" placeholder="Parol" required />
+                            <input
+                                type="password"
+                                name="password"
+                                class="form-control form-control-lg"
+                                placeholder="Parol"
+                                required
+                            />
                             <div class="input-group-append custom">
                                 <span class="input-group-text"><i class="dw dw-padlock1"></i></span>
                             </div>
@@ -61,4 +77,33 @@ Tizimga kirish
         </div>
     </div>
 </div>
+
+<script>
+document.addEventListener("DOMContentLoaded", () => {
+  const phoneInput = document.getElementById('phone');
+
+  // Kiritilayotgan belgilarni nazorat qilish
+  phoneInput.addEventListener('input', (e) => {
+    // "+" belgisi har doim boshida turishi kerak
+    if (!phoneInput.value.startsWith('+')) {
+      phoneInput.value = '+' + phoneInput.value.replace(/\+/g, '');
+    }
+
+    // Faqat raqamlar va "+" belgisi ruxsat etiladi
+    phoneInput.value = phoneInput.value.replace(/[^+\d]/g, '');
+
+    // Belgilar sonini cheklaymiz (+998901234567)
+    if (phoneInput.value.length > 13) {
+      phoneInput.value = phoneInput.value.slice(0, 13);
+    }
+  });
+
+  // "+" belgisi o‘chirib yuborilmasin
+  phoneInput.addEventListener('keydown', (e) => {
+    if (phoneInput.selectionStart === 0 && (e.key === 'Backspace' || e.key === 'Delete')) {
+      e.preventDefault();
+    }
+  });
+});
+</script>
 {% endblock %}

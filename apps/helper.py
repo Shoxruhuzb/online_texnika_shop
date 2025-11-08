@@ -3,7 +3,8 @@ from datetime import timedelta
 from django.conf import settings
 from twilio.rest import Client
 from django.utils import timezone
-
+import random
+from django.core.cache import cache
 #
 # class MessageHandler:
 #     def __init__(self, phone, otp):
@@ -20,24 +21,18 @@ from django.utils import timezone
 #         print(f"OTP for {self.phone} is {self.otp}")
 
 class MessageHandler:
-    def __init__(self, phone, otp, user) -> None:
+    def __init__(self, phone) -> None:
         self.phone = phone
-        self.otp = otp
-        self.user = user
 
     def send_otp_via_message(self):
-        print(f"[TEST MODE] OTP for {self.phone}: {self.otp}")
+        otp = str(random.randint(1000, 9999))
+        print(f"[TEST MODE] OTP for {self.phone}: {otp}")
+        cache.set(f"otp_{self.phone}", otp, timeout=60)
+        return otp
 
-        self.user.otp = self.otp
-        self.user.otp_created_at = timezone.now()
-        self.user.save()
 
-def is_otp_valid(user, entered_otp):
-    if not user.otp or not user.otp_created_at:
+def is_otp_valid(phone, entered_otp):
+    saved_otp = cache.get(f"otp_{phone}")
+    if not saved_otp:
         return False
-    now = timezone.now()
-    if now - user.otp_created_at > timedelta(minutes=1):
-        return False
-    if entered_otp != user.otp:
-        return False
-    return True
+    return saved_otp == entered_otp

@@ -44,29 +44,29 @@ class ProductDetailView(DetailView):
         return context
 
 
-class RegisterCreateView(CreateView):
+class RegisterCreateView(View):
     template_name = 'apps/auth/register.html'
-    form_class = RegisterForm
 
-    def form_valid(self, form):
-        user = form.save(commit=False)
-        phone = form.cleaned_data.get('phone')
-        password = form.cleaned_data.get('password')
+    def get(self, request):
+        return render(request, self.template_name, {'form': RegisterForm()})
 
-        if User.objects.filter(phone=phone).exists():
-            return HttpResponse("User already exists")
+    def post(self, request):
+        form = RegisterForm(request.POST)
+        if form.is_valid():
+            user = form.save(commit=False)
+            phone = form.cleaned_data['phone']
 
-        user.set_password(password)
+            if User.objects.filter(phone=phone).exists():
+                return render(request, self.template_name,
+                              {'form': form, 'error': 'Bu telefon raqam allaqachon mavjud.'})
 
-        otp = random.randint(1000, 9999)
-        user.otp = str(otp)
-        user.save()
+            user.save()
 
-        MessageHandler(phone, otp, user).send_otp_via_message()
+            otp = MessageHandler(phone).send_otp_via_message()
+            request.session['pending_phone'] = phone
+            return redirect(f"/otp/{user.uid}/")
 
-        response = redirect(f'/otp/{user.uid}/')
-        response.set_cookie("can_otp_enter", True, max_age=600)
-        return response
+        return render(request, self.template_name, {'form': form})
 
 
 # class otpVerifyView(View):
@@ -105,15 +105,13 @@ class otpVerifyView(View):
         except User.DoesNotExist:
             return HttpResponse("User not found")
 
+        phone = user.phone
         entered_otp = request.POST.get('otp')
-        if is_otp_valid(user, entered_otp):
+
+        if is_otp_valid(phone, entered_otp):
             user.is_active = True
-            user.otp = None
-            user.otp_created_at = None
             user.save()
-            response = redirect(reverse_lazy("product_list_view"))
-            response.set_cookie('verified', True)
-            return response
+            return redirect(reverse_lazy("product_list_view"))
         else:
             return render(request, self.template_name, {
                 'id': uid,
