@@ -1,20 +1,18 @@
-https://www.figma.com/design/Hda8bgGevRwr9ZsRA4zBi4/Full-E-Commerce-Website-UI-UX-Design-(Community)?node-id=1-3&p=f&t=ouabHbBn6BasTvk6-0
-
-
 Task
 1. login, register +
 - phone orqali login qilish
 - phone register qilishda,
-agar phone kiritgan bolsa, sms yuborish kk (1minutda tasdiqlash kk)
+agar phone kiritgan bolsa, sms yuborish kk (1minutda tasdiqlash kk redisda saqlansin)
 sms qayta yuborish bolsin
 
-1.1 edit profile apisi kerak (phone ozgartirganda tasdiqlash yuborilishi)
+
+1.2 password uchun argon2 ni ishlatish kerak
 
 2. product modeli +
 - rasmlari bir hil size bolsin (barcha webp formatga otkazilsin)
 - productni size va color bolsin
 
-3. i18n (en, uz, ru)
+3. i18n (en, uz, ru) +
 
 4. isort, flake8
 
@@ -23,6 +21,7 @@ sms qayta yuborish bolsin
 6. fixtures qoshish
 
 7. bazaga phone saqlashda bir hil formatda saqlash
+998901001010
 
 8. pagination & search
 
