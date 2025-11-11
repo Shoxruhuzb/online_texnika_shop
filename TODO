@@ -8,11 +8,11 @@ sms qayta yuborish bolsin
 
 1.2 password uchun argon2 ni ishlatish kerak
 
-2. product modeli +
+2. ✅ + product modeli
 - rasmlari bir hil size bolsin (barcha webp formatga otkazilsin)
 - productni size va color bolsin
 
-3. i18n (en, uz, ru) +
+3. ✅ + i18n (en, uz, ru) +
 
 4. isort, flake8
 
@@ -24,4 +24,10 @@ sms qayta yuborish bolsin
 998901001010
 
 8. pagination & search
+
+9. ✅ + userga uuid qoshish
+
+10. api degan narsani olib tashash
+
+11.
 
