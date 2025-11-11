@@ -1,12 +1,12 @@
 from io import BytesIO
 
+from apps.models.base import CreatedBaseModel, UUIDBaseModel
+from django.core.files.base import ContentFile
+from django.db.models import CASCADE, CharField, FloatField, ForeignKey, ImageField
+from django.utils.translation import gettext_lazy as _
+from django_ckeditor_5.fields import CKEditor5Field
 from PIL import Image
 from PIL.Image import Resampling
-from django.core.files.base import ContentFile
-from django.db.models import CharField, FloatField, TextField, ImageField, ForeignKey, CASCADE
-from django.utils.translation import gettext_lazy as _
-
-from apps.models.base import UUIDBaseModel, CreatedBaseModel
 
 
 class Product(UUIDBaseModel, CreatedBaseModel):
@@ -14,7 +14,8 @@ class Product(UUIDBaseModel, CreatedBaseModel):
     price = FloatField(verbose_name=_("Price"))
     discount_price = FloatField(blank=True, null=True, verbose_name=_("Discount price"))
     product_amount = FloatField(blank=True, null=True, verbose_name=_("Amount"))
-    description = TextField(verbose_name=_('Description'))
+    # description = TextField(verbose_name=_('Description'))
+    description = CKEditor5Field(verbose_name=_("Description"), config_name="default")
 
     class Meta:
         ordering = ['-created_at']

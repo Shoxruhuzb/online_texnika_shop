@@ -1,10 +1,9 @@
+from apps.models import Product, ProductImage, User
+from apps.models.products import ProductAttribute
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.utils.html import format_html
 from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
-
-from apps.models import ProductImage, Product, User
-from apps.models.products import ProductAttribute
+from django.utils.html import format_html
 
 
 class ProductImageInline(admin.StackedInline):

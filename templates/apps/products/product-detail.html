@@ -10,13 +10,13 @@
 <style>
 /* 🔹 Product Images Slider */
 .product-image {
-    width: 100%;       /* slider konteyneriga mos kenglik */
-    height: 400px;     /* barcha rasmlar uchun bir xil balandlik */
-    object-fit: cover;  /* rasmni konteynerga moslab kesadi, deformatsiyasiz */
+    width: 100%;
+    height: 400px;
+    object-fit: cover;
 }
 
 .product-slide-nav img {
-    width: 100px;      /* thumbnail o'lchami */
+    width: 100px;
     height: 80px;
     object-fit: cover;
     cursor: pointer;
@@ -58,18 +58,18 @@
                     <div class="product-slider slider-arrow">
                         {% for img in product.images.all %}
                             <div class="product-slide">
-                                <img src="{{ img.image.url }}" alt="" class="product-image"/>
+                                <img src="{{ img.image.url }}" alt="{{ product.name }}" class="product-image"/>
                             </div>
                         {% empty %}
                             <div class="product-slide">
-                                <img src="{% static 'apps/vendors/images/noimage.jpeg' %}" alt="" class="product-image"/>
+                                <img src="{% static 'apps/vendors/images/noimage.jpeg' %}" alt="No Image" class="product-image"/>
                             </div>
                         {% endfor %}
                     </div>
                     <div class="product-slider-nav">
                         {% for img in product.images.all %}
                             <div class="product-slide-nav">
-                                <img src="{{ img.image.url }}" alt="" class="product-thumb"/>
+                                <img src="{{ img.image.url }}" alt="Thumbnail" class="product-thumb"/>
                             </div>
                         {% endfor %}
                     </div>
@@ -113,6 +113,7 @@
                                 <a href="#" class="btn btn-outline-primary btn-block">Buy Now</a>
                             </div>
                         </div>
+                        <div id="cartMessage" class="mt-2" style="color: green;"></div>
                     </div>
                 </div>
             </div>
@@ -158,6 +159,7 @@
 <script src="{% static 'apps/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
 <script>
 jQuery(document).ready(function () {
+    // 🔹 Slick Slider
     jQuery(".product-slider").slick({
         slidesToShow: 1,
         slidesToScroll: 1,
@@ -177,9 +179,10 @@ jQuery(document).ready(function () {
         focusOnSelect: true,
     });
 
+    // 🔹 Quantity Input
     $("input[name='quantity']").TouchSpin({initval: 1});
 
-    // 🛒 Add To Cart AJAX
+    // 🔹 Add To Cart AJAX
     $("#addToCartBtn").on("click", function (e) {
         e.preventDefault();
         const productId = $(this).data("id");
@@ -192,8 +195,15 @@ jQuery(document).ready(function () {
         })
         .then(res => res.json())
         .then(data => {
-            alert("Product added to cart!");
-            location.reload();
+            if (data.success) {
+                $("#cartMessage").text(`Added to cart! Quantity: ${data.quantity}`).css("color", "green");
+            } else {
+                $("#cartMessage").text("Failed to add to cart").css("color", "red");
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            $("#cartMessage").text("Error occurred. Try again.").css("color", "red");
         });
     });
 });

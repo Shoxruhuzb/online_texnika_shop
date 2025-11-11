@@ -1,14 +1,13 @@
-from django.conf import settings
-from django.db.models import CASCADE, ForeignKey, CharField, BooleanField, PositiveIntegerField
-
+from apps.models.base import CreatedBaseModel, UUIDBaseModel
 from apps.models.products import Product
-from apps.models.base import UUIDBaseModel, CreatedBaseModel
+from django.conf import settings
+from django.db.models import CASCADE, BooleanField, CharField, ForeignKey, PositiveIntegerField
 
 User = settings.AUTH_USER_MODEL
 
 
 class Cart(UUIDBaseModel, CreatedBaseModel):
-    user = ForeignKey(User, CASCADE, null=True, blank=True)
+    user = ForeignKey(User, CASCADE, null=True, blank=True)  # null=True, blank=True olib tashlash
     session_key = CharField(max_length=255, null=True, blank=True)
     is_active = BooleanField(default=True)
 

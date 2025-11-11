@@ -1,10 +1,10 @@
+import re
+
+from apps.models import User
 from django import forms
 from django.contrib.auth import authenticate
 from django.db.models.fields import CharField
 from django.forms import ModelForm
-
-from apps.models import User
-from apps.serializers import UserPhoneSerializer
 
 
 class RegisterForm(ModelForm):
@@ -14,13 +14,16 @@ class RegisterForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ('phone',)  # ('phone', 'password', 'confirm_password') # """muammo bo'lsa"""
+        fields = ('phone',)
 
     def clean_phone(self):
         phone = self.data.get('phone')
-        serializer = UserPhoneSerializer(data={'phone': phone})
-        serializer.is_valid(raise_exception=True)
-        return serializer.validated_data['phone']
+        digits = re.sub(r'\D', '', phone)
+        if not digits.startswith('998'):
+            raise forms.ValidationError("Telefon raqam 998 bilan boshlanishi kerak")
+        if len(digits) != 12:
+            raise forms.ValidationError("Telefon raqam noto'g'ri kiritilgan")
+        return phone
 
     def clean(self):
         cleaned_data = super().clean()

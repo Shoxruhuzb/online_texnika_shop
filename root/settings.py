@@ -1,5 +1,6 @@
 import os
 from pathlib import Path
+
 from dotenv import load_dotenv
 
 load_dotenv()
@@ -81,6 +82,13 @@ AUTH_PASSWORD_VALIDATORS = [
     #     'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator',
     # },
 ]
+# argon2 uchun tuzatish
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
+]
 
 LANGUAGE_CODE = 'en'
 
@@ -112,13 +120,13 @@ REST_FRAMEWORK = {
     'DEFAULT_SCHEMA_CLASS': 'drf_spectacular.openapi.AutoSchema',
 }
 
-SPECTACULAR_SETTINGS = {
-    'TITLE': 'Your Project API',
-    'DESCRIPTION': 'Your project description',
-    'VERSION': '1.0.0',
-    'SERVE_INCLUDE_SCHEMA': False,
-    # OTHER SETTINGS
-}
+# SPECTACULAR_SETTINGS = {
+#     'TITLE': 'Your Project API',
+#     'DESCRIPTION': 'Your project description',
+#     'VERSION': '1.0.0',
+#     'SERVE_INCLUDE_SCHEMA': False,
+#     # OTHER SETTINGS
+# }
 customColorPalette = [
     {
         'color': 'hsl(4, 90%, 58%)',
@@ -213,10 +221,9 @@ CKEDITOR_5_CONFIGS = {
     }
 }
 
-
 LOGIN_URL = '/login'
 
-ACCOUNT_SID='YOUR ACCOUNT SID'
-AUTH_TOKEN='YOUR AUTH TOKEN'
-COUNTRY_CODE='+998' # +998 o'chirilishi mumkin. Lekin +998 registerda kiritiladi
-TWILIO_PHONE_NUMBER='number you get from Twilio'
+ACCOUNT_SID = 'YOUR ACCOUNT SID'
+AUTH_TOKEN = 'YOUR AUTH TOKEN'
+COUNTRY_CODE = '+998'
+TWILIO_PHONE_NUMBER = 'number you get from Twilio'

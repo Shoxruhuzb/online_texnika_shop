@@ -1,10 +1,7 @@
-from datetime import timedelta
-
-from django.conf import settings
-from twilio.rest import Client
-from django.utils import timezone
 import random
+
 from django.core.cache import cache
+
 #
 # class MessageHandler:
 #     def __init__(self, phone, otp):

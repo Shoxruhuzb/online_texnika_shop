@@ -1,7 +1,8 @@
 import uuid
+
 from django.contrib.auth.base_user import AbstractBaseUser, BaseUserManager
 from django.contrib.auth.models import PermissionsMixin
-from django.db.models import CharField, BooleanField, DateTimeField
+from django.db.models import BooleanField, CharField, DateTimeField
 
 
 class UserManager(BaseUserManager):

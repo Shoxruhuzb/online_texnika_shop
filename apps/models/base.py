@@ -1,7 +1,7 @@
 import uuid
 
 from django.db.models import Model
-from django.db.models.fields import UUIDField, DateTimeField
+from django.db.models.fields import DateTimeField, UUIDField
 
 
 class UUIDBaseModel(Model):

@@ -1,26 +1,20 @@
-from django.contrib.auth import logout, authenticate, login
-from django.contrib.auth.mixins import LoginRequiredMixin
-from django.http import JsonResponse
-from django.urls import reverse_lazy
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
-from django.views import View
-from django.views.generic import DetailView, TemplateView, CreateView
-from django.contrib import messages
-
 from apps.forms import RegisterForm
 from apps.models import Product
 from apps.utils import CartManager
-
-from django.shortcuts import render, redirect, get_object_or_404
-from django.contrib.auth import get_user_model
+from django.contrib import messages
+from django.contrib.auth import authenticate, get_user_model, login, logout
+from django.contrib.auth.mixins import LoginRequiredMixin
 from django.db.models import F
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404, redirect, render
+from django.urls import reverse_lazy
+from django.utils.decorators import method_decorator
+from django.views import View
+from django.views.decorators.csrf import csrf_exempt
+from django.views.generic import DetailView, TemplateView
 
 from .helper import MessageHandler, is_otp_valid
-from .models.cart import CartItem, Cart
-
-import random
-from django.http import HttpResponse
+from .models.cart import Cart, CartItem
 
 User = get_user_model()
 
@@ -55,15 +49,17 @@ class RegisterCreateView(View):
         if form.is_valid():
             user = form.save(commit=False)
             phone = form.cleaned_data['phone']
+            password = form.cleaned_data['password']
 
             if User.objects.filter(phone=phone).exists():
                 return render(request, self.template_name,
                               {'form': form, 'error': 'Bu telefon raqam allaqachon mavjud.'})
 
-            user.save()
-
+            request.session['pending_user'] = {
+                'phone': phone,
+                'password': password
+            }
             otp = MessageHandler(phone).send_otp_via_message()
-            request.session['pending_phone'] = phone
             return redirect(f"/otp/{user.uid}/")
 
         return render(request, self.template_name, {'form': form})
@@ -100,15 +96,26 @@ class otpVerifyView(View):
         return render(request, self.template_name, {'id': uid})
 
     def post(self, request, uid):
-        try:
-            user = User.objects.get(uid=uid)
-        except User.DoesNotExist:
-            return HttpResponse("User not found")
-
-        phone = user.phone
+        #
+        pending_user = request.session.get('pending_user')
+        if not pending_user:
+            return redirect('register_view')
+        phone = pending_user['phone']
         entered_otp = request.POST.get('otp')
 
+        # try:
+        #     user = User.objects.get(uid=uid)
+        # except User.DoesNotExist:
+        #     return ValidationError("User topilmadi")
+        #     # return HttpResponse("User not found")
+
+        # phone = user.phone
+        # entered_otp = request.POST.get('otp')
+
         if is_otp_valid(phone, entered_otp):
+            #
+            user = User(phone=phone)
+            user.set_password(pending_user['password'])
             user.is_active = True
             user.save()
             return redirect(reverse_lazy("product_list_view"))
@@ -123,13 +130,13 @@ class otpVerifyView(View):
 class ResendOtpView(View):
     def post(self, request, uid):
         try:
-            user = User.objects.get(uid=uid)
-        except User.DoesNotExist:
+            pending_user = request.session.get('pending_user')
+        except pending_user.DoesNotExist:
             return JsonResponse({'success': False, 'message': 'User not found'})
 
-        otp = str(random.randint(1000, 9999))
-        MessageHandler(user.phone, otp, user).send_otp_via_message()
-        return JsonResponse({'success': True})
+        phone = pending_user['phone']
+        otp = MessageHandler(phone).send_otp_via_message()
+        return JsonResponse({'success': True, 'message': f'y=Yangi SMS yuborildi: {otp}'})
 
 
 class LoginView(View):
@@ -192,20 +199,25 @@ class AddToCartView(View):
         product = get_object_or_404(Product, id=product_id)
 
         if request.user.is_authenticated:
-            cart, created = Cart.objects.get_or_create(user=request.user, is_active=True)
+            cart, _ = Cart.objects.get_or_create(user=request.user, is_active=True)
             item, created = CartItem.objects.get_or_create(cart=cart, product=product)
-            item.quantity = F('quantity') + quantity
+            if not created:
+                item.quantity = F('quantity') + quantity
+            else:
+                item.quantity = quantity
             item.save()
+            item.refresh_from_db()
         else:
             cart = request.session.get('cart', {})
-            if str(product_id) in cart:
-                cart[str(product_id)] += quantity
-            else:
-                cart[str(product_id)] = quantity
+            cart[str(product.id)] = cart.get(str(product.id), 0) + quantity
+            # if str(product_id) in cart:
+            #     cart[str(product_id)] += quantity
+            # else:
+            #     cart[str(product_id)] = quantity
             request.session['cart'] = cart
             request.session.modified = True
 
-        return JsonResponse({'success': True})
+        return JsonResponse({'success': True, 'quantity': quantity})
 
 
 class RemoveFromCartView(View):

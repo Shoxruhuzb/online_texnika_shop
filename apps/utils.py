@@ -1,5 +1,6 @@
 from apps.models.cart import Cart, CartItem
 from apps.models.products import Product
+from django.contrib.auth.hashers import check_password, make_password
 
 
 class CartManager:
@@ -46,3 +47,15 @@ class CartManager:
     def __len__(self):
         cart = self._get_or_create_cart()
         return cart.items.count()
+
+
+class PasswordManager:
+
+    def __init__(self, hasher='argon2'):
+        self.hasher = hasher
+
+    def hash(self, password: str) -> str:
+        return make_password(password, hasher=self.hasher)
+
+    def verify(self, password: str, hashed_password: str) -> bool:
+        return check_password(password, hashed_password)
