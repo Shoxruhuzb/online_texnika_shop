@@ -15,5 +15,4 @@ urlpatterns = [
     path('cart/remove/<uuid:product_id>', RemoveFromCartView.as_view(), name='remove_from_cart'),
     path('otp/<str:uid>/', otpVerifyView.as_view(), name='otp_view'),
     path('otp/resend/<str:uid>/', ResendOtpView.as_view(), name='resend_otp_view'),
-
 ]

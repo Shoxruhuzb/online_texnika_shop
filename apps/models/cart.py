@@ -1,5 +1,6 @@
-from django.db import models
 from django.conf import settings
+from django.db.models import CASCADE, ForeignKey, CharField, BooleanField, PositiveIntegerField
+
 from apps.models.products import Product
 from apps.models.base import UUIDBaseModel, CreatedBaseModel
 
@@ -7,9 +8,9 @@ User = settings.AUTH_USER_MODEL
 
 
 class Cart(UUIDBaseModel, CreatedBaseModel):
-    user = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
-    session_key = models.CharField(max_length=255, null=True, blank=True)
-    is_active = models.BooleanField(default=True)
+    user = ForeignKey(User, CASCADE, null=True, blank=True)
+    session_key = CharField(max_length=255, null=True, blank=True)
+    is_active = BooleanField(default=True)
 
     def __str__(self):
         if self.user:
@@ -26,9 +27,9 @@ class Cart(UUIDBaseModel, CreatedBaseModel):
 
 
 class CartItem(UUIDBaseModel, CreatedBaseModel):
-    cart = models.ForeignKey(Cart, on_delete=models.CASCADE, related_name='items')
-    product = models.ForeignKey(Product, on_delete=models.CASCADE)
-    quantity = models.PositiveIntegerField(default=0)
+    cart = ForeignKey(Cart, CASCADE, related_name='items')
+    product = ForeignKey(Product, on_delete=CASCADE)
+    quantity = PositiveIntegerField(default=0)
 
     class Meta:
         unique_together = ('cart', 'product')

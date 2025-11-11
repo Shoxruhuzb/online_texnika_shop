@@ -4,6 +4,7 @@ from django.db.models.fields import CharField
 from django.forms import ModelForm
 
 from apps.models import User
+from apps.serializers import UserPhoneSerializer
 
 
 class RegisterForm(ModelForm):
@@ -13,7 +14,13 @@ class RegisterForm(ModelForm):
 
     class Meta:
         model = User
-        fields = ('phone',)   # ('phone', 'password', 'confirm_password') # """muammo bo'lsa"""
+        fields = ('phone',)  # ('phone', 'password', 'confirm_password') # """muammo bo'lsa"""
+
+    def clean_phone(self):
+        phone = self.data.get('phone')
+        serializer = UserPhoneSerializer(data={'phone': phone})
+        serializer.is_valid(raise_exception=True)
+        return serializer.validated_data['phone']
 
     def clean(self):
         cleaned_data = super().clean()
@@ -31,6 +38,7 @@ class RegisterForm(ModelForm):
             user.save()
         return user
 
+
 class LoginForm(forms.Form):
     phone = CharField()
     password = CharField()
@@ -42,5 +50,3 @@ class LoginForm(forms.Form):
         if not user:
             raise forms.ValidationError("Invalid phone or password")
         return self.cleaned_data
-
-
