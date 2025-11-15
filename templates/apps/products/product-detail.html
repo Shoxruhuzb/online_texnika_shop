@@ -4,208 +4,214 @@
 {% block title %}Product Detail Page{% endblock %}
 
 {% block custom_css %}
-<link rel="stylesheet" type="text/css" href="{% static 'apps/src/plugins/slick/slick.css' %}"/>
-<link rel="stylesheet" type="text/css" href="{% static 'apps/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}"/>
+    <link rel="stylesheet" type="text/css" href="{% static 'apps/src/plugins/slick/slick.css' %}"/>
+    <link rel="stylesheet" type="text/css"
+          href="{% static 'apps/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.css' %}"/>
 
-<style>
-/* 🔹 Product Images Slider */
-.product-image {
-    width: 100%;
-    height: 400px;
-    object-fit: cover;
-}
+    <style>
+        /* 🔹 Product Images Slider */
+        .product-image {
+            width: 100%;
+            height: 400px;
+            object-fit: cover;
+        }
 
-.product-slide-nav img {
-    width: 100px;
-    height: 80px;
-    object-fit: cover;
-    cursor: pointer;
-}
+        .product-slide-nav img {
+            width: 100px;
+            height: 80px;
+            object-fit: cover;
+            cursor: pointer;
+        }
 
-/* Qo‘shimcha styling */
-.product-detail-desc .price del {
-    margin-right: 10px;
-    color: #888;
-}
-.product-detail-desc .price ins {
-    color: #e74c3c;
-    font-weight: bold;
-}
-</style>
+        /* Qo‘shimcha styling */
+        .product-detail-desc .price del {
+            margin-right: 10px;
+            color: #888;
+        }
+
+        .product-detail-desc .price ins {
+            color: #e74c3c;
+            font-weight: bold;
+        }
+    </style>
 {% endblock %}
 
 {% block main_content %}
-<div class="min-height-200px">
-    <div class="page-header">
-        <div class="row">
-            <div class="col-md-12 col-sm-12">
-                <div class="title"><h4>Product Detail</h4></div>
-                <nav aria-label="breadcrumb">
-                    <ol class="breadcrumb">
-                        <li class="breadcrumb-item"><a href="{% url 'product_list_view' %}">Home</a></li>
-                        <li class="breadcrumb-item active" aria-current="page">Product Detail</li>
-                    </ol>
-                </nav>
-            </div>
-        </div>
-    </div>
-
-    <div class="product-wrap">
-        <div class="product-detail-wrap mb-30">
+    <div class="min-height-200px">
+        <div class="page-header">
             <div class="row">
-                <!-- Product Images Slider -->
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="product-slider slider-arrow">
-                        {% for img in product.images.all %}
-                            <div class="product-slide">
-                                <img src="{{ img.image.url }}" alt="{{ product.name }}" class="product-image"/>
-                            </div>
-                        {% empty %}
-                            <div class="product-slide">
-                                <img src="{% static 'apps/vendors/images/noimage.jpeg' %}" alt="No Image" class="product-image"/>
-                            </div>
-                        {% endfor %}
-                    </div>
-                    <div class="product-slider-nav">
-                        {% for img in product.images.all %}
-                            <div class="product-slide-nav">
-                                <img src="{{ img.image.url }}" alt="Thumbnail" class="product-thumb"/>
-                            </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <!-- Product Info -->
-                <div class="col-lg-6 col-md-12 col-sm-12">
-                    <div class="product-detail-desc pd-20 card-box height-100-p">
-                        <h4 class="mb-20 pt-20">{{ product.name }}</h4>
-                        <p>{{ product.description }}</p>
-
-                        <div class="price mb-3">
-                            {% if product.discount_price %}
-                                <del>${{ product.price }}</del>
-                                <ins>${{ product.discount_price }}</ins>
-                            {% else %}
-                                <ins>${{ product.price }}</ins>
-                            {% endif %}
-                        </div>
-
-                        <div class="mb-3">
-                            {% if product.product_amount > 0 %}
-                                <span class="badge badge-success">Available: {{ product.product_amount }} left</span>
-                            {% else %}
-                                <span class="badge badge-danger">Sold Out</span>
-                            {% endif %}
-                        </div>
-
-                        <div class="mb-3">
-                            <label class="text-blue">Quantity</label>
-                            <input id="quantity_input" type="text" value="1" name="quantity"/>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 col-6">
-                                <button id="addToCartBtn" class="btn btn-primary btn-block" data-id="{{ product.id }}">
-                                    Add To Cart
-                                </button>
-                            </div>
-                            <div class="col-md-6 col-6">
-                                <a href="#" class="btn btn-outline-primary btn-block">Buy Now</a>
-                            </div>
-                        </div>
-                        <div id="cartMessage" class="mt-2" style="color: green;"></div>
-                    </div>
+                <div class="col-md-12 col-sm-12">
+                    <div class="title"><h4>Product Detail</h4></div>
+                    <nav aria-label="breadcrumb">
+                        <ol class="breadcrumb">
+                            <li class="breadcrumb-item"><a href="{% url 'product_list_view' %}">Home</a></li>
+                            <li class="breadcrumb-item active" aria-current="page">Product Detail</li>
+                        </ol>
+                    </nav>
                 </div>
             </div>
         </div>
 
-        <!-- Latest Products -->
-        <h4 class="mb-20">Recent Products</h4>
-        <div class="product-list">
-            <ul class="row">
-                {% for latest_product in latest_products %}
-                    <li class="col-lg-4 col-md-6 col-sm-12">
-                        <div class="product-box">
-                            <div class="producct-img">
-                                {% if latest_product.first_image %}
-                                    <img src="{{ latest_product.first_image }}" alt="" style="width:100%; height:200px; object-fit:cover;"/>
+        <div class="product-wrap">
+            <div class="product-detail-wrap mb-30">
+                <div class="row">
+                    <!-- Product Images Slider -->
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="product-slider slider-arrow">
+                            {% for img in product.images.all %}
+                                <div class="product-slide">
+                                    <img src="{{ img.image.url }}" alt="{{ product.name }}" class="product-image"/>
+                                </div>
+                            {% empty %}
+                                <div class="product-slide">
+                                    <img src="{% static 'apps/vendors/images/noimage.jpeg' %}" alt="No Image"
+                                         class="product-image"/>
+                                </div>
+                            {% endfor %}
+                        </div>
+                        <div class="product-slider-nav">
+                            {% for img in product.images.all %}
+                                <div class="product-slide-nav">
+                                    <img src="{{ img.image.url }}" alt="Thumbnail" class="product-thumb"/>
+                                </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+
+                    <!-- Product Info -->
+                    <div class="col-lg-6 col-md-12 col-sm-12">
+                        <div class="product-detail-desc pd-20 card-box height-100-p">
+                            <h4 class="mb-20 pt-20">{{ product.name }}</h4>
+                            <p>{{ product.description }}</p>
+
+                            <div class="price mb-3">
+                                {% if product.discount_price %}
+                                    <del>${{ product.price }}</del>
+                                    <ins>${{ product.discount_price }}</ins>
                                 {% else %}
-                                    <img src="{% static 'apps/vendors/images/noimage.jpeg' %}" alt="" style="width:100%; height:200px; object-fit:cover;"/>
+                                    <ins>${{ product.price }}</ins>
                                 {% endif %}
                             </div>
-                            <div class="product-caption">
-                                <h4><a href="{% url 'product_detail_view' latest_product.id %}">{{ latest_product.name }}</a></h4>
-                                <div class="price">
-                                    {% if latest_product.discount_price %}
-                                        <del>${{ latest_product.price }}</del>
-                                        <ins>${{ latest_product.discount_price }}</ins>
+
+                            <div class="mb-3">
+                                {% if product.product_amount > 0 %}
+                                    <span class="badge badge-success">Available: {{ product.product_amount }} left</span>
+                                {% else %}
+                                    <span class="badge badge-danger">Sold Out</span>
+                                {% endif %}
+                            </div>
+
+                            <div class="mb-3">
+                                <label class="text-blue">Quantity</label>
+                                <input id="quantity_input" type="text" value="1" name="quantity"/>
+                            </div>
+
+                            <div class="row">
+                                <div class="col-md-6 col-6">
+                                    <button id="addToCartBtn" class="btn btn-primary btn-block"
+                                            onclick="addToCart({id: `{{ product.id }}`, name: `{{ product.name }}`, price: {{ product.price }}, qty: 1})">
+                                        Add To Cart
+                                    </button>
+                                </div>
+                                <div class="col-md-6 col-6">
+                                    <a href="#" class="btn btn-outline-primary btn-block">Buy Now</a>
+                                </div>
+                            </div>
+                            <div id="cartMessage" class="mt-2" style="color: green;"></div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Latest Products -->
+            <h4 class="mb-20">Recent Products</h4>
+            <div class="product-list">
+                <ul class="row">
+                    {% for latest_product in latest_products %}
+                        <li class="col-lg-4 col-md-6 col-sm-12">
+                            <div class="product-box">
+                                <div class="producct-img">
+                                    {% if latest_product.first_image %}
+                                        <img src="{{ latest_product.first_image }}" alt=""
+                                             style="width:100%; height:200px; object-fit:cover;"/>
                                     {% else %}
-                                        <ins>${{ latest_product.price }}</ins>
+                                        <img src="{% static 'apps/vendors/images/noimage.jpeg' %}" alt=""
+                                             style="width:100%; height:200px; object-fit:cover;"/>
                                     {% endif %}
                                 </div>
-                                <a href="{% url 'product_detail_view' latest_product.id %}" class="btn btn-outline-primary">Read More</a>
+                                <div class="product-caption">
+                                    <h4>
+                                        <a href="{% url 'product_detail_view' latest_product.id %}">{{ latest_product.name }}</a>
+                                    </h4>
+                                    <div class="price">
+                                        {% if latest_product.discount_price %}
+                                            <del>${{ latest_product.price }}</del>
+                                            <ins>${{ latest_product.discount_price }}</ins>
+                                        {% else %}
+                                            <ins>${{ latest_product.price }}</ins>
+                                        {% endif %}
+                                    </div>
+                                    <a href="{% url 'product_detail_view' latest_product.id %}"
+                                       class="btn btn-outline-primary">Read More</a>
+                                </div>
                             </div>
-                        </div>
-                    </li>
-                {% endfor %}
-            </ul>
+                        </li>
+                    {% endfor %}
+                </ul>
+            </div>
         </div>
     </div>
-</div>
 {% endblock %}
 
 {% block custom_js %}
-<script src="{% static 'apps/src/plugins/slick/slick.min.js' %}"></script>
-<script src="{% static 'apps/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
-<script>
-jQuery(document).ready(function () {
-    // 🔹 Slick Slider
-    jQuery(".product-slider").slick({
-        slidesToShow: 1,
-        slidesToScroll: 1,
-        arrows: true,
-        infinite: true,
-        fade: true,
-        asNavFor: ".product-slider-nav",
-    });
-    jQuery(".product-slider-nav").slick({
-        slidesToShow: 3,
-        slidesToScroll: 1,
-        asNavFor: ".product-slider",
-        dots: false,
-        infinite: true,
-        arrows: false,
-        centerMode: true,
-        focusOnSelect: true,
-    });
+    <script src="{% static 'apps/src/plugins/slick/slick.min.js' %}"></script>
+    <script src="{% static 'apps/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
+    <script>
+        function getCart() {
+            return JSON.parse(localStorage.getItem("cart") || "[]");
+        }
 
-    // 🔹 Quantity Input
-    $("input[name='quantity']").TouchSpin({initval: 1});
+        function saveCart(cart) {
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
 
-    // 🔹 Add To Cart AJAX
-    $("#addToCartBtn").on("click", function (e) {
-        e.preventDefault();
-        const productId = $(this).data("id");
-        const quantity = $("#quantity_input").val() || 1;
+        function addToCart(item) {
+            let cart = getCart();
+            let existing = cart.find(p => p.id === item.id);
 
-        fetch(`/cart/add/${productId}/`, {
-            method: "POST",
-            headers: {"X-CSRFToken": "{{ csrf_token }}"},
-            body: new URLSearchParams({quantity})
-        })
-        .then(res => res.json())
-        .then(data => {
-            if (data.success) {
-                $("#cartMessage").text(`Added to cart! Quantity: ${data.quantity}`).css("color", "green");
+            if (existing) {
+                existing.qty += item.qty;
             } else {
-                $("#cartMessage").text("Failed to add to cart").css("color", "red");
+                cart.push(item);
             }
-        })
-        .catch(err => {
-            console.error(err);
-            $("#cartMessage").text("Error occurred. Try again.").css("color", "red");
+
+            saveCart(cart);
+            console.log('cartga saqlandi');
+        }
+
+        jQuery(document).ready(function () {
+            // 🔹 Slick Slider
+            jQuery(".product-slider").slick({
+                slidesToShow: 1,
+                slidesToScroll: 1,
+                arrows: true,
+                infinite: true,
+                fade: true,
+                asNavFor: ".product-slider-nav",
+            });
+            jQuery(".product-slider-nav").slick({
+                slidesToShow: 3,
+                slidesToScroll: 1,
+                asNavFor: ".product-slider",
+                dots: false,
+                infinite: true,
+                arrows: false,
+                centerMode: true,
+                focusOnSelect: true,
+            });
+
+            // 🔹 Quantity Input
+            $("input[name='quantity']").TouchSpin({initval: 1});
         });
-    });
-});
-</script>
+    </script>
 {% endblock %}

@@ -59,7 +59,7 @@ class RegisterCreateView(View):
                 'phone': phone,
                 'password': password
             }
-            otp = MessageHandler(phone).send_otp_via_message()
+            MessageHandler(phone).send_otp_via_message()
             return redirect(f"/otp/{user.uid}/")
 
         return render(request, self.template_name, {'form': form})
@@ -176,13 +176,6 @@ class CartView(View):
             for item in cart.items.all():
                 cart_items.append(item)
                 total_price += item.total_price
-        else:
-            session_cart = request.session.get('cart', {})
-            for product_id, qty in session_cart.items():
-                product = get_object_or_404(Product, id=product_id)
-                total = product.price * qty
-                cart_items.append({'product': product, 'quantity': qty, 'total_price': total})
-                total_price += total
         return cart_items, total_price
 
     def get(self, request):
@@ -208,14 +201,10 @@ class AddToCartView(View):
             item.save()
             item.refresh_from_db()
         else:
-            cart = request.session.get('cart', {})
-            cart[str(product.id)] = cart.get(str(product.id), 0) + quantity
-            # if str(product_id) in cart:
-            #     cart[str(product_id)] += quantity
-            # else:
-            #     cart[str(product_id)] = quantity
-            request.session['cart'] = cart
-            request.session.modified = True
+            context = {
+                'session_key': request.session.session_key,
+                'product_carts': []
+            }
 
         return JsonResponse({'success': True, 'quantity': quantity})
 

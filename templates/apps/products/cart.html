@@ -4,58 +4,104 @@
 {% block title %}Shopping Cart{% endblock %}
 
 {% block main_content %}
-<div class="container mt-4">
-    <h2>Shopping Cart</h2>
+    <div class="container mt-4">
+        <h2>Shopping Cart</h2>
 
-    {% if not cart_items %}
-        <p>Your cart is empty 😢</p>
-    {% else %}
-        <table class="table table-bordered">
-            <thead>
-                <tr>
-                    <th>Image</th>
-                    <th>Product</th>
-                    <th>Price</th>
-                    <th>Quantity</th>
-                    <th>Total</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                {% for item in cart_items %}
-                <tr>
-                    <td>
-                        {% if item.product.first_image %}
-                            <img src="{{ item.product.first_image }}" width="60">
-                        {% else %}
-                            <img src="{% static 'apps/vendors/images/noimage.jpeg' %}" width="60">
-                        {% endif %}
-                    </td>
-                    <td>{{ item.product.name }}</td>
-                    <td>${{ item.product.price }}</td>
-                    <td>{{ item.quantity }}</td>
-                    <td>${{ item.total_price }}</td>
-                    <td>
-                        <button class="btn btn-sm btn-danger remove-btn" data-id="{{ item.product.id }}">🗑</button>
-                    </td>
-                </tr>
-                {% endfor %}
-            </tbody>
-        </table>
-        <h4>Total: ${{ total_price }}</h4>
-    {% endif %}
-</div>
+        <div id="cart-area">
+            <!-- JS bu joyga jadvalni joylashtiradi -->
+        </div>
+    </div>
 
-<script>
-document.querySelectorAll('.remove-btn').forEach(btn => {
-    btn.addEventListener('click', function() {
-        const id = this.dataset.id;
-        fetch(`/cart/remove/${id}/`, {
-            method: 'POST',
-            headers: {'X-CSRFToken': '{{ csrf_token }}'}
-        })
-        .then(() => location.reload());
-    });
-});
-</script>
+    <script>
+        /* ============================
+              LOCALSTORAGE FUNKSIYALAR
+        =============================== */
+        function getCart() {
+            return JSON.parse(localStorage.getItem("cart") || "[]");
+        }
+
+        function saveCart(cart) {
+            localStorage.setItem("cart", JSON.stringify(cart));
+        }
+
+        function removeFromCart(id) {
+            console.log('remove');
+            let cart = getCart().filter(item => `${item.id}` !== `${id}`);
+            saveCart(cart);
+            renderCart();
+        }
+
+        function updateQty(id, qty) {
+            let cart = getCart();
+            let item = cart.find(i => i.id === id);
+            if (item) item.qty = Number(qty);
+            saveCart(cart);
+            renderCart();
+        }
+
+        /* ============================
+              CARTNI RENDER QILISH
+        =============================== */
+        function renderCart() {
+            let cart = getCart();
+            let html = "";
+
+            if (cart.length === 0) {
+                html = `<p>Your cart is empty 😢</p>`;
+                document.getElementById("cart-area").innerHTML = html;
+                return;
+            }
+
+            let totalPrice = 0;
+
+            html += `
+    <table class="table table-bordered">
+        <thead>
+            <tr>
+                <th>Image</th>
+                <th>Product</th>
+                <th>Price</th>
+                <th>Qty</th>
+                <th>Total</th>
+                <th></th>
+            </tr>
+        </thead>
+        <tbody>
+    `;
+
+            cart.forEach(item => {
+                let itemTotal = item.price * item.qty;
+                totalPrice += itemTotal;
+
+                html += `
+        <tr>
+            <td>
+                <img src="${item.image || '/static/apps/vendors/images/noimage.jpeg'}" width="60">
+            </td>
+            <td>${item.name}</td>
+            <td>$${item.price}</td>
+            <td>
+                <input type="number" min="1" value="${item.qty}"
+                       onchange="updateQty(${item.id}, this.value)"
+                       class="form-control form-control-sm" style="width:70px;">
+            </td>
+            <td>$${itemTotal}</td>
+            <td>
+                <button class="btn btn-sm btn-danger" onclick="removeFromCart(${item.id})">🗑</button>
+            </td>
+        </tr>`;
+            });
+
+            html += `
+        </tbody>
+    </table>
+    <h4>Total: $${totalPrice}</h4>
+    `;
+
+            document.getElementById("cart-area").innerHTML = html;
+        }
+
+        renderCart();
+    </script>
+
 {% endblock %}

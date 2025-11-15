@@ -2,7 +2,6 @@ from apps.models import Product, ProductImage, User
 from apps.models.products import ProductAttribute
 from django.contrib import admin
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.admin import UserAdmin as BaseUserAdmin
 from django.utils.html import format_html
 
 
@@ -39,7 +38,7 @@ class ProductModelAdmin(admin.ModelAdmin):
 
 
 @admin.register(User)
-class UserAdmin(BaseUserAdmin):
+class CustomUserAdmin(UserAdmin):
     list_display = ('id', 'phone', 'is_active', 'is_staff', 'is_superuser')
     list_filter = ('is_staff', 'is_superuser', 'is_active')
     search_fields = ('phone',)

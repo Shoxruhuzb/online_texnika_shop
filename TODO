@@ -3,10 +3,11 @@ Task
 - phone orqali login qilish
 - phone register qilishda,
 agar phone kiritgan bolsa, sms yuborish kk (1minutda tasdiqlash kk redisda saqlansin)
-sms qayta yuborish bolsin
+sms qayta yuborish bolsin,
+1minut ichida qayta yubora olmasligi kerak
 
 
-1.2 password uchun argon2 ni ishlatish kerak
+1.2 ✅ +  password uchun argon2 ni ishlatish kerak
 
 2. ✅ + product modeli
 - rasmlari bir hil size bolsin (barcha webp formatga otkazilsin)
@@ -14,7 +15,7 @@ sms qayta yuborish bolsin
 
 3. ✅ + i18n (en, uz, ru) +
 
-4. isort, flake8
+4. ✅ + isort, flake8
 
 5. modellarga ckeditor5 qoshish
 
@@ -29,5 +30,10 @@ sms qayta yuborish bolsin
 
 10. api degan narsani olib tashash
 
-11. anonym user cartga qoshish qismi ishlashi
+11. login qilgandan keyin cartga qosha olishi kerak
 
+12. login qilib turgan user qayta login qila olmasligi kerak
+
+13. adminkada login qilishda nomer chiroyli chiqishi
+
+14.
