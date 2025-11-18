@@ -16,7 +16,7 @@
                     <nav aria-label="breadcrumb" role="navigation">
                         <ol class="breadcrumb">
                             <li class="breadcrumb-item">
-                                <a href="index.html">Home</a>
+                                <a href="{% url 'product_list_view' %}">Home</a>
                             </li>
                             <li class="breadcrumb-item active" aria-current="page">
                                 Product
@@ -32,35 +32,37 @@
                     {% for product in products %}
                         <li class="col-lg-4 col-md-6 col-sm-12">
                             <div class="product-box">
-                                <div class="producct-img">
-                                    {% if product.first_image %}
-                                        <img src="{{ product.first_image }}" alt=""/>
-                                    {% else %}
-                                        <img src="{% static 'apps/vendors/images/noimage.jpeg' %}" alt=""/>
-                                    {% endif %}
-                                </div>
-                                <div class="product-caption">
-                                    <h4><a href="{% url 'product_detail_view' product.id %}">{{ product.name }}</a>
-                                    </h4>
-                                    <div class="price">
-                                        {% if product.discount_price %}
-                                            <del>${{ product.price }}</del>
-                                            <ins>${{ product.discount_price }}</ins>
-                                            <ins>${{ product.discount_percent }}</ins>
+                                <a href="{% url 'product_detail_view' product.pk %}">
+                                    <div class="producct-img">
+                                        {% if product.first_image %}
+                                            <img src="{{ product.first_image }}" alt=""/>
                                         {% else %}
-                                            <ins>${{ product.price }}</ins>
+                                            <img src="{% static 'apps/vendors/images/noimage.jpeg' %}" alt=""/>
                                         {% endif %}
                                     </div>
-                                    <div class="mb-3">
-                                        {% if product.product_amount and product.product_amount > 0 %}
-                                            <span class="badge badge-success">Available: {{ product.product_amount }} left</span>
-                                        {% else %}
-                                            <span class="badge badge-danger">Sold Out</span>
-                                        {% endif %}
+                                    <div class="product-caption">
+                                        <h4><a href="{% url 'product_detail_view' product.id %}">{{ product.name }}</a>
+                                        </h4>
+                                        <div class="price">
+                                            {% if product.discount_price %}
+                                                <del>${{ product.price }}</del>
+                                                <ins>${{ product.discount_price }}</ins>
+                                                <ins>${{ product.discount_percent }}</ins>
+                                            {% else %}
+                                                <ins>${{ product.price }}</ins>
+                                            {% endif %}
+                                        </div>
+                                        <div class="mb-3">
+                                            {% if product.product_amount and product.product_amount > 0 %}
+                                                <span class="badge badge-success">Available: {{ product.product_amount }} left</span>
+                                            {% else %}
+                                                <span class="badge badge-danger">Sold Out</span>
+                                            {% endif %}
+                                        </div>
+                                        <a href="{% url 'product_detail_view' product.id %}"
+                                           class="btn btn-outline-primary">Read More</a>
                                     </div>
-                                    <a href="{% url 'product_detail_view' product.id %}"
-                                       class="btn btn-outline-primary">Read More</a>
-                                </div>
+                                </a>
                             </div>
                         </li>
                     {% endfor %}

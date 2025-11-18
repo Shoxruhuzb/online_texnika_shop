@@ -82,7 +82,7 @@
                     <div class="col-lg-6 col-md-12 col-sm-12">
                         <div class="product-detail-desc pd-20 card-box height-100-p">
                             <h4 class="mb-20 pt-20">{{ product.name }}</h4>
-                            <p>{{ product.description }}</p>
+                            <p>{{ product.description|safe }}</p>
 
                             <div class="price mb-3">
                                 {% if product.discount_price %}
@@ -167,28 +167,6 @@
     <script src="{% static 'apps/src/plugins/slick/slick.min.js' %}"></script>
     <script src="{% static 'apps/src/plugins/bootstrap-touchspin/jquery.bootstrap-touchspin.js' %}"></script>
     <script>
-        function getCart() {
-            return JSON.parse(localStorage.getItem("cart") || "[]");
-        }
-
-        function saveCart(cart) {
-            localStorage.setItem("cart", JSON.stringify(cart));
-        }
-
-        function addToCart(item) {
-            let cart = getCart();
-            let existing = cart.find(p => p.id === item.id);
-
-            if (existing) {
-                existing.qty += item.qty;
-            } else {
-                cart.push(item);
-            }
-
-            saveCart(cart);
-            console.log('cartga saqlandi');
-        }
-
         jQuery(document).ready(function () {
             // 🔹 Slick Slider
             jQuery(".product-slider").slick({

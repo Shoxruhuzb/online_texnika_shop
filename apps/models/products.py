@@ -1,19 +1,20 @@
 from io import BytesIO
 
-from apps.models.base import CreatedBaseModel, UUIDBaseModel
+from PIL import Image
+from PIL.Image import Resampling
 from django.core.files.base import ContentFile
 from django.db.models import CASCADE, CharField, FloatField, ForeignKey, ImageField
 from django.utils.translation import gettext_lazy as _
 from django_ckeditor_5.fields import CKEditor5Field
-from PIL import Image
-from PIL.Image import Resampling
+
+from apps.models.base import CreatedBaseModel, UUIDBaseModel
 
 
 class Product(UUIDBaseModel, CreatedBaseModel):
-    name = CharField(max_length=255, verbose_name=_("Name"))
-    price = FloatField(verbose_name=_("Price"))
-    discount_price = FloatField(blank=True, null=True, verbose_name=_("Discount price"))
-    product_amount = FloatField(blank=True, null=True, verbose_name=_("Amount"))
+    name = CharField(_("Name"), max_length=255)
+    price = FloatField(_("Price"))
+    discount_price = FloatField(_("Discount price"), blank=True, null=True)
+    product_amount = FloatField(_("Amount"), blank=True, null=True)
     # description = TextField(verbose_name=_('Description'))
     description = CKEditor5Field(verbose_name=_("Description"), config_name="default")
 
@@ -56,8 +57,8 @@ class ProductImage(UUIDBaseModel):
 
 class ProductAttribute(UUIDBaseModel):
     product = ForeignKey(Product, CASCADE, related_name='attributes')
-    key = CharField(max_length=50, verbose_name=_("Attribute Name"))
-    value = CharField(max_length=100, verbose_name=_("Attribute Value"))
+    key = CharField(_("Attribute Name"), max_length=50)
+    value = CharField(_("Attribute Value"), max_length=100)
 
     def __str__(self):
         return f"{self.key}: {self.value}"

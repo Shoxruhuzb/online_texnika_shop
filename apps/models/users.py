@@ -40,3 +40,7 @@ class User(AbstractBaseUser, PermissionsMixin):
 
     def __str__(self):
         return self.phone
+
+    @property
+    def cart_count(self):
+        return self.cart.items.count()
